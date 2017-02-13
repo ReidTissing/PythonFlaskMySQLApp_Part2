@@ -7,8 +7,8 @@ app = Flask(__name__)
 app.secret_key = 'why would I tell you my secret key?'
 
 # MySQL configurations
-app.config['MYSQL_DATABASE_USER'] = 'jay'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'jay'
+app.config['MYSQL_DATABASE_USER'] = 'cil'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'Thfrgl%0'
 app.config['MYSQL_DATABASE_DB'] = 'BucketList'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -44,6 +44,8 @@ def logout():
 
 @app.route('/validateLogin',methods=['POST'])
 def validateLogin():
+    con = mysql.connect()
+    cursor = con.cursor()
     try:
         _username = request.form['inputEmail']
         _password = request.form['inputPassword']
@@ -52,8 +54,7 @@ def validateLogin():
         
         # connect to mysql
 
-        con = mysql.connect()
-        cursor = con.cursor()
+
         cursor.callproc('sp_validateLogin',(_username,))
         data = cursor.fetchall()
 
@@ -79,6 +80,8 @@ def validateLogin():
 
 @app.route('/signUp',methods=['POST','GET'])
 def signUp():
+    conn = mysql.connect()
+    cursor = conn.cursor()
     try:
         _name = request.form['inputName']
         _email = request.form['inputEmail']
@@ -89,8 +92,6 @@ def signUp():
             
             # All Good, let's call MySQL
             
-            conn = mysql.connect()
-            cursor = conn.cursor()
             _hashed_password = generate_password_hash(_password)
             cursor.callproc('sp_createUser',(_name,_email,_hashed_password))
             data = cursor.fetchall()
